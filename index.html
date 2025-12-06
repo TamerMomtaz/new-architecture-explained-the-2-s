@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RootRise Architecture — Interactive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Primary Brand - Bronze/Gold */
+            --bronze: #B8904A;
+            --bronze-light: #C4965F;
+            --bronze-dark: #9D7E3A;
+            
+            /* Dark Mode - Teal Crystal (from Ruba's color system) */
+            --caribbean-current: #0A4744;
+            --deep-teal-bg: #0D5550;
+            --midnight-green: #0A4848;
+            --dark-green: #003127;
+            --rich-black: #001414;
+            
+            /* Accent - Calm Teal */
+            --light-teal: #5AABA8;
+            --medium-light-teal: #54B2B2;
+            --classic-teal: #008B8B;
+            --medium-dark-teal: #006666;
+            --deep-teal: #004C4C;
+            --logo-teal: #3AACBC;
+            
+            /* Light Mode */
+            --warm-cream: #F5F1E3;
+            --sandy-beige: #E0E0D0;
+            
+            /* Semantic */
+            --bg-primary: var(--caribbean-current);
+            --bg-card: var(--midnight-green);
+            --border: var(--dark-green);
+            --accent: var(--medium-light-teal);
+            --text-primary: #ffffff;
+            --text-secondary: #a0c8c8;
+            --text-muted: #6b9090;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; }
+        
+        .hero { padding: 50px 40px; background: linear-gradient(135deg, var(--rich-black) 0%, var(--caribbean-current) 100%); border-bottom: 4px solid var(--bronze); text-align: center; }
+        .hero-badge { display: inline-block; background: rgba(184,144,74,0.2); border: 1px solid var(--bronze); padding: 8px 20px; border-radius: 30px; font-size: 12px; color: var(--bronze); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+        h1 { font-family: 'Cinzel', serif; font-size: 48px; margin-bottom: 12px; background: linear-gradient(135deg, #fff 0%, var(--bronze-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-sub { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; }
+        
+        .nav { position: sticky; top: 0; z-index: 100; background: var(--deep-teal-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+        .nav-btn { padding: 12px 24px; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+        .nav-btn:hover { background: var(--bg-card); color: var(--text-primary); }
+        .nav-btn.active { background: var(--bronze); color: var(--rich-black); border-color: var(--bronze); }
+        
+        .content { max-width: 1400px; margin: 0 auto; padding: 40px 30px; }
+        .section { margin-bottom: 60px; }
+        .section-title { font-family: 'Cinzel', serif; font-size: 32px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; }
+        .section-title::before { content: ''; width: 5px; height: 36px; background: var(--bronze); border-radius: 3px; }
+        .section-desc { color: var(--text-secondary); margin-bottom: 30px; font-size: 16px; }
+        
+        /* Agent Grid */
+        .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        
+        .agent-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .agent-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .agent-card.core { border-color: var(--bronze); }
+        .agent-card.core:hover { box-shadow: 0 15px 40px rgba(184,144,74,0.25); }
+        .agent-card.addon { border-color: var(--classic-teal); }
+        .agent-card.addon:hover { box-shadow: 0 15px 40px rgba(0,139,139,0.25); }
+        .agent-card.supervisor { border-color: var(--logo-teal); grid-column: 1 / -1; background: linear-gradient(135deg, var(--deep-teal) 0%, var(--bg-card) 100%); }
+        .agent-card.utility { border-color: var(--medium-dark-teal); }
+        
+        .agent-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+        .agent-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .agent-card.core .agent-icon { background: var(--bronze); }
+        .agent-card.addon .agent-icon { background: var(--classic-teal); }
+        .agent-card.supervisor .agent-icon { background: var(--logo-teal); }
+        .agent-card.utility .agent-icon { background: var(--medium-dark-teal); }
+        .agent-name { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; }
+        .agent-type { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        .agent-type.core { color: var(--bronze); }
+        .agent-type.addon { color: var(--logo-teal); }
+        .agent-pioneer { font-size: 13px; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+        .agent-role { font-size: 14px; color: var(--text-secondary); }
+        .click-hint { font-size: 11px; color: var(--text-muted); margin-top: 12px; opacity: 0; transition: opacity 0.3s; }
+        .agent-card:hover .click-hint { opacity: 1; }
+        
+        /* Lens Grid */
+        .lens-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .lens-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.3s; }
+        .lens-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.25); border-color: var(--classic-teal); }
+        .lens-card.custom { border: 2px dashed var(--logo-teal); }
+        .lens-header { padding: 18px 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+        .lens-icon { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .lens-name { font-size: 16px; font-weight: 600; }
+        .lens-type { font-size: 11px; color: var(--text-muted); }
+        .lens-content { padding: 16px 20px; }
+        .lens-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .lens-tag { background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 5px; font-size: 11px; color: var(--text-secondary); }
+        .lens-tag.hi { font-weight: 500; }
+        
+        /* Panel */
+        .overlay { position: fixed; inset: 0; background: rgba(0,20,20,0.8); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+        .overlay.show { opacity: 1; pointer-events: all; }
+        
+        .panel { position: fixed; top: 0; right: -600px; width: 600px; max-width: 100%; height: 100vh; background: linear-gradient(180deg, var(--rich-black) 0%, var(--caribbean-current) 100%); border-left: 4px solid var(--bronze); padding: 40px; overflow-y: auto; z-index: 1000; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .panel.show { right: 0; }
+        .panel.lens-panel { border-left-color: var(--logo-teal); }
+        
+        .close-btn { position: absolute; top: 20px; right: 20px; background: var(--bg-card); border: 2px solid var(--border); color: #fff; font-size: 22px; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .close-btn:hover { background: var(--bronze); border-color: var(--bronze); color: var(--rich-black); }
+        
+        .panel h3 { font-family: 'Cinzel', serif; font-size: 28px; color: var(--bronze); margin-bottom: 8px; }
+        .panel.lens-panel h3 { color: var(--logo-teal); }
+        .panel-subtitle { font-size: 14px; color: var(--bronze-light); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+        
+        .detail-block { margin-bottom: 28px; }
+        .detail-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--bronze); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .detail-label::before { content: ''; width: 16px; height: 2px; background: var(--bronze); }
+        .detail-text { font-size: 15px; color: var(--text-secondary); line-height: 1.8; }
+        .detail-list { list-style: none; }
+        .detail-list li { padding: 10px 0; padding-left: 24px; position: relative; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; color: var(--text-secondary); }
+        .detail-list li::before { content: '▸'; position: absolute; left: 0; color: var(--logo-teal); }
+        
+        .tool-tag { display: inline-block; background: var(--deep-teal); color: var(--logo-teal); padding: 8px 14px; border-radius: 6px; font-size: 12px; margin: 4px; font-family: 'JetBrains Mono', monospace; border: 1px solid var(--classic-teal); }
+        .prompt-box { background: var(--rich-black); border: 1px solid var(--border); border-radius: 10px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--light-teal); line-height: 1.7; white-space: pre-wrap; max-height: 280px; overflow-y: auto; }
+        
+        /* Builder */
+        .builder { background: var(--bg-card); border: 2px solid var(--logo-teal); border-radius: 14px; padding: 28px; margin-top: 20px; }
+        .builder h4 { font-size: 18px; color: var(--logo-teal); margin-bottom: 20px; }
+        .builder-field { margin-bottom: 18px; }
+        .builder-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; display: block; }
+        .builder-input { width: 100%; padding: 14px 16px; background: var(--rich-black); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 14px; font-family: inherit; }
+        .builder-input:focus { outline: none; border-color: var(--logo-teal); }
+        .builder-input::placeholder { color: var(--text-muted); }
+        .builder-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .builder-tag { background: rgba(58,172,188,0.15); border: 1px solid var(--logo-teal); color: var(--logo-teal); padding: 6px 12px; border-radius: 16px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
+        .builder-tag .x { cursor: pointer; opacity: 0.7; }
+        .builder-tag .x:hover { opacity: 1; }
+        .builder-btn { background: linear-gradient(135deg, var(--deep-teal) 0%, var(--classic-teal) 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .builder-btn:hover { box-shadow: 0 8px 25px rgba(0,139,139,0.4); }
+        
+        .footer { background: var(--rich-black); border-top: 1px solid var(--border); padding: 40px; text-align: center; }
+        .footer-logo { font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 10px; }
+        .footer-logo .rise { color: var(--bronze); }
+        .footer-meta { font-size: 13px; color: var(--text-muted); }
+        
+        @media (max-width: 700px) {
+            h1 { font-size: 32px; }
+            .panel { width: 100%; right: -100%; padding: 30px 20px; }
+            .content { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <header class="hero">
+        <div class="hero-badge">Interactive Architecture v3.0</div>
+        <h1>The RootRise System</h1>
+        <p class="hero-sub">Click any agent or lens card to explore full details, tools, and specifications.</p>
+    </header>
+    
+    <nav class="nav">
+        <button class="nav-btn active" onclick="scrollTo('agents')">🏛️ The Pantheon</button>
+        <button class="nav-btn" onclick="scrollTo('lenses')">🔭 Sector Lenses</button>
+    </nav>
+    
+    <main class="content">
+        <section class="section" id="agents">
+            <h2 class="section-title">The Pantheon — 10 Specialist Agents</h2>
+            <p class="section-desc">Click any card to view backstory, tools, and prompt template.</p>
+            <div class="agent-grid" id="agentGrid"></div>
+        </section>
+        
+        <section class="section" id="lenses">
+            <h2 class="section-title">The &Eye — 12 Sector Lenses</h2>
+            <p class="section-desc">Click any lens to explore standards, diagnostics, and regulators. Lens #12 is customizable!</p>
+            <div class="lens-grid" id="lensGrid"></div>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <div class="footer-logo"><span>Root</span><span class="rise">Rise</span></div>
+        <div class="footer-meta">Architecture v3.0 • December 2025 • DEVONEERS</div>
+    </footer>
+    
+    <div class="panel" id="agentPanel">
+        <button class="close-btn" onclick="closePanel()">×</button>
+        <div id="agentContent"></div>
+    </div>
+    
+    <div class="panel lens-panel" id="lensPanel">
+        <button class="close-btn" onclick="closePanel()">×</button>
+        <div id="lensContent"></div>
+    </div>
+
+<script>
+// ===== DATA =====
+const agents = [
+    {id:'drucker', name:'The Drucker', type:'supervisor', icon:'🎯', typeLabel:'ORCHESTRATOR', title:'Peter F. Drucker (1909-2005) — Father of Modern Management', role:'Coordinates all agents, resolves conflicts, synthesizes final report.', goal:'Produce comprehensive, actionable SME diagnostic reports.', backstory:'Like Peter Drucker who consulted for GE and IBM, orchestrates with systematic precision.', items:['Route requests to agents','Manage parallel execution','Resolve contradictions','Synthesize final report','Handle HITL escalations'], itemsLabel:'Responsibilities', tools:['route_to_agent','validate_output','synthesize_report','escalate_to_human'], prompt:'# THE DRUCKER\n## ROLE: Chief Orchestrator\n## PRINCIPLES\n1. Management is doing things right\n2. What gets measured gets managed\n3. Create the future'},
+    {id:'marvin', name:'The Marvin', type:'core', icon:'🔍', typeLabel:'CORE — Diagnostic', title:'Marvin Bower (1903-2003) — Father of Management Consulting', role:'Business health analyst across 5 pillars.', goal:'Deliver rigorous business diagnostics.', backstory:'Like Marvin Bower who built McKinsey, examines SMEs with systematic rigor.', items:['Health score (0-100)','Maturity matrix','Critical gaps','Quick wins (30-day)','Strategic priorities'], itemsLabel:'Outputs', tools:['query_sme_data','fetch_benchmarks','calculate_maturity','identify_gaps'], prompt:'# THE MARVIN\n## 5 PILLARS\n1. Leadership (20%)\n2. Operations (25%)\n3. Market (20%)\n4. Financial (20%)\n5. People (15%)'},
+    {id:'graham', name:'The Graham', type:'core', icon:'💰', typeLabel:'CORE — Finance', title:'Benjamin Graham (1894-1976) — Father of Value Investing', role:'Financial health and funding readiness.', goal:'Investor-grade financial analysis.', backstory:'Benjamin Graham taught Warren Buffett. The Graham brings that discipline.', items:['Financial score','Funding readiness','Capital structure','Working capital','Investment thesis'], itemsLabel:'Outputs', tools:['analyze_financials','calculate_ratios','assess_funding','benchmark'], prompt:'# THE GRAHAM\n## METRICS\n1. Liquidity\n2. Profitability\n3. Efficiency\n4. Leverage\n5. Growth'},
+    {id:'ricardo', name:'The Ricardo', type:'addon', icon:'🌍', typeLabel:'ADD-ON — Export', title:'David Ricardo (1772-1823) — Comparative Advantage', role:'Export readiness and market mapping.', goal:'Identify international opportunities.', backstory:'Ricardo revolutionized trade theory. Finds global niches.', items:['Export score','Target markets','Certification gaps','Trade barriers','Export roadmap'], itemsLabel:'Outputs', tools:['assess_export','identify_markets','map_certifications'], prompt:'# THE RICARDO\n## AREAS\n1. Product readiness\n2. Documentation\n3. Certifications\n4. Logistics\n5. Market knowledge'},
+    {id:'lovelace', name:'The Lovelace', type:'addon', icon:'💻', typeLabel:'ADD-ON — Digital', title:'Ada Lovelace (1815-1852) — First Programmer', role:'Digital maturity and transformation.', goal:'Assess tech readiness.', backstory:'Ada saw computing potential a century early.', items:['Digital score','Tech assessment','Automation gaps','Transformation roadmap'], itemsLabel:'Outputs', tools:['assess_digital','analyze_tech','identify_automation'], prompt:'# THE LOVELACE\n## DIMENSIONS\n1. Infrastructure\n2. Software\n3. Data\n4. Skills\n5. Online presence'},
+    {id:'mayo', name:'The Mayo', type:'addon', icon:'👥', typeLabel:'ADD-ON — HR', title:'Elton Mayo (1880-1949) — Human Relations', role:'Workforce and organizational health.', goal:'Evaluate people readiness.', backstory:'Mayo proved human factors matter most.', items:['People score','Org structure','Skills matrix','Culture indicators'], itemsLabel:'Outputs', tools:['assess_org','analyze_skills','evaluate_culture'], prompt:'# THE MAYO\n## AREAS\n1. Structure\n2. Talent\n3. Culture\n4. Key person risks\n5. HR systems'},
+    {id:'ohno', name:'The Ohno', type:'addon', icon:'📦', typeLabel:'ADD-ON — Supply Chain', title:'Taiichi Ohno (1912-1990) — Toyota Production', role:'Supply chain and lean optimization.', goal:'Eliminate waste, optimize flow.', backstory:'Ohno created lean manufacturing.', items:['Supply score','Supplier risk','Logistics map','Lean roadmap'], itemsLabel:'Outputs', tools:['map_supply_chain','assess_supplier','analyze_logistics'], prompt:'# THE OHNO\n## 7 WASTES\n1. Transport\n2. Inventory\n3. Motion\n4. Waiting\n5. Overproduction\n6. Overprocessing\n7. Defects'},
+    {id:'porter', name:'The Porter', type:'addon', icon:'📊', typeLabel:'ADD-ON — Market', title:'Michael Porter (1947-) — Competitive Strategy', role:'Market position and competitive analysis.', goal:'Strategic positioning.', backstory:'Porter created Five Forces.', items:['Market score','Five Forces','Competitive map','Strategic options'], itemsLabel:'Outputs', tools:['analyze_five_forces','map_competitors','assess_position'], prompt:'# THE PORTER\n## FIVE FORCES\n1. New entrants\n2. Supplier power\n3. Buyer power\n4. Substitutes\n5. Rivalry'},
+    {id:'tufte', name:'The Tufte', type:'utility', icon:'📋', typeLabel:'UTILITY — Reports', title:'Edward Tufte (1942-) — Data Visualization', role:'Report generation and visualization.', goal:'Transform data into clarity.', backstory:'Tufte taught that visualization is insight.', items:['Executive summary','Formatted report','Visualizations','Action roadmap'], itemsLabel:'Outputs', tools:['generate_report','create_visuals','format_summary'], prompt:'# THE TUFTE\n## PRINCIPLES\n1. Show the data\n2. Induce thinking\n3. Avoid distortion\n4. Present density\n5. Make coherent'},
+    {id:'deming', name:'The Deming', type:'utility', icon:'✓', typeLabel:'UTILITY — QA', title:'W. Edwards Deming (1900-1993) — Quality Management', role:'Quality assurance and validation.', goal:'Ensure accuracy and completeness.', backstory:'Deming transformed manufacturing through quality.', items:['Validation score','Accuracy check','Consistency check','HITL recommendation'], itemsLabel:'Outputs', tools:['validate_accuracy','check_consistency','assess_completeness'], prompt:'# THE DEMING\n## CHECKLIST\n1. Accuracy\n2. Consistency\n3. Completeness\n4. Actionability\n5. Professionalism'}
+];
+
+const lenses = [
+    {id:'food', name:'Food Processing', icon:'🥫', color:'#4CAF50', standards:['HACCP','ISO 22000','FSSC 22000','Halal','Kosher'], certifications:['HACCP','ISO 22000:2018','FSSC 22000'], diagnostics:['Cold chain gaps','Traceability','Post-harvest loss','Allergen control'], regulators:['Egypt NFSA','Saudi SFDA','FDA FSMA'], benchmarks:['Spoilage rate','Energy/ton','Water/ton']},
+    {id:'pharma', name:'Pharmaceuticals', icon:'💊', color:'#2196F3', standards:['GMP','WHO PQ','GDP','ICH Q7'], certifications:['GMP Certificate','WHO PQ'], diagnostics:['Clean room check','Batch docs','Stability testing'], regulators:['Egypt EDA','Saudi SFDA','EMA','FDA'], benchmarks:['Batch rejection','OOS time','Yield']},
+    {id:'cosmetics', name:'Cosmetics', icon:'💄', color:'#E91E63', standards:['ISO 22716','Halal','Cruelty-Free'], certifications:['ISO 22716','CPNP','Leaping Bunny'], diagnostics:['Ingredient safety','Stability','Labeling'], regulators:['EU 1223/2009','Saudi SFDA'], benchmarks:['Dev cycle','Complaint rate']},
+    {id:'packaging', name:'Packaging', icon:'📦', color:'#FF9800', standards:['BRC Packaging','FSC','PEFC'], certifications:['BRC','FSC CoC'], diagnostics:['Food contact safety','Migration testing','Recyclability'], regulators:['EU 1935/2004','FDA 21 CFR'], benchmarks:['Defect rate','Material yield']},
+    {id:'plastics', name:'Plastics', icon:'🧪', color:'#9C27B0', standards:['IATF 16949','ISO 14001','RoHS'], certifications:['IATF 16949','GRS'], diagnostics:['Mold quality','Recycled content','Energy efficiency'], regulators:['REACH','Single-use Plastics'], benchmarks:['Scrap rate','Cycle time']},
+    {id:'filling', name:'Filling & Bottling', icon:'🏭', color:'#00BCD4', standards:['FSSC 22000','IFS','BRC'], certifications:['FSSC 22000','IFS Food'], diagnostics:['OEE analysis','Aseptic integrity','Fill accuracy'], regulators:['Food safety authorities'], benchmarks:['OEE','Water usage','Downtime']},
+    {id:'textile', name:'Textile', icon:'🧵', color:'#795548', standards:['OEKO-TEX','GOTS','BSCI'], certifications:['OEKO-TEX','GOTS Organic'], diagnostics:['Labor compliance','Dye wastewater','Chemical management'], regulators:['EU Textile Strategy','REACH'], benchmarks:['Lead time','Defect rate']},
+    {id:'electronics', name:'Electronics', icon:'⚡', color:'#3F51B5', standards:['IPC Standards','RoHS','WEEE','CE'], certifications:['IPC-A-610','CE Mark'], diagnostics:['ESD control','Solder quality','Test coverage'], regulators:['EU RoHS/WEEE','FCC'], benchmarks:['First-pass yield','DPPM']},
+    {id:'automotive', name:'Automotive', icon:'🚗', color:'#F44336', standards:['IATF 16949','VDA 6.3','IMDS'], certifications:['IATF 16949','VDA 6.3'], diagnostics:['PPAP readiness','FMEA maturity','SPC capability'], regulators:['OEM requirements','REACH'], benchmarks:['PPM defects','On-time delivery']},
+    {id:'chemicals', name:'Chemicals', icon:'⚗️', color:'#FFC107', standards:['Responsible Care','GHS','REACH'], certifications:['ISO 9001','Responsible Care'], diagnostics:['SDS management','Hazmat storage','Process safety'], regulators:['REACH','CLP','TSCA'], benchmarks:['Safety incidents','Waste reduction']},
+    {id:'furniture', name:'Furniture', icon:'🪑', color:'#8BC34A', standards:['FSC','PEFC','CARB','Greenguard'], certifications:['FSC CoC','CARB Phase 2'], diagnostics:['Wood sourcing','VOC emissions','Assembly efficiency'], regulators:['EU Timber Reg','Lacey Act'], benchmarks:['Material yield','Defect rate']},
+    {id:'custom', name:'Your Lens', icon:'✨', isCustom:true, color:'linear-gradient(135deg, #B8904A, #3AACBC)', description:'Build a custom lens for your unique industry.'}
+];
+
+let customData = {standards:[], diagnostics:[], regulators:[]};
+
+// ===== RENDER =====
+function renderAgents() {
+    document.getElementById('agentGrid').innerHTML = agents.map(a => `
+        <div class="agent-card ${a.type}" onclick="openAgent('${a.id}')">
+            <div class="agent-top">
+                <div class="agent-icon">${a.icon}</div>
+                <div>
+                    <div class="agent-name">${a.name}</div>
+                    <div class="agent-type ${a.type}">${a.typeLabel}</div>
+                </div>
+            </div>
+            <div class="agent-pioneer">${a.title}</div>
+            <div class="agent-role">${a.role}</div>
+            <div class="click-hint">Click for details →</div>
+        </div>
+    `).join('');
+}
+
+function renderLenses() {
+    document.getElementById('lensGrid').innerHTML = lenses.map((l, i) => {
+        if (l.isCustom) {
+            return `<div class="lens-card custom" onclick="openLens('${l.id}')">
+                <div class="lens-header"><div class="lens-icon" style="background:${l.color};">${l.icon}</div><div><div class="lens-name">${l.name}</div><div class="lens-type" style="color:var(--logo-teal);">Lens #12 — Customizable</div></div></div>
+                <div class="lens-content"><div class="lens-tags"><span class="lens-tag" style="border:1px dashed var(--logo-teal);color:var(--logo-teal);">+ Build Your Own</span></div></div>
+            </div>`;
+        }
+        return `<div class="lens-card" onclick="openLens('${l.id}')">
+            <div class="lens-header" style="background:linear-gradient(135deg, ${l.color}22 0%, var(--bg-card) 100%);"><div class="lens-icon" style="background:${l.color};">${l.icon}</div><div><div class="lens-name">${l.name}</div><div class="lens-type">Lens #${i+1}</div></div></div>
+            <div class="lens-content"><div class="lens-tags">${l.standards.slice(0,3).map((s,j) => `<span class="lens-tag ${j<2?'hi':''}" style="${j<2?`border:1px solid ${l.color};color:${l.color};`:''}">${s}</span>`).join('')}</div></div>
+        </div>`;
+    }).join('');
+}
+
+// ===== PANELS =====
+function openAgent(id) {
+    const a = agents.find(x => x.id === id);
+    if (!a) return;
+    document.getElementById('agentContent').innerHTML = `
+        <h3>${a.name}</h3>
+        <div class="panel-subtitle">${a.title}</div>
+        <div class="detail-block"><div class="detail-label">Role</div><p class="detail-text">${a.role}</p></div>
+        <div class="detail-block"><div class="detail-label">Goal</div><p class="detail-text">${a.goal}</p></div>
+        <div class="detail-block"><div class="detail-label">Backstory</div><p class="detail-text">${a.backstory}</p></div>
+        <div class="detail-block"><div class="detail-label">${a.itemsLabel}</div><ul class="detail-list">${a.items.map(i => `<li>${i}</li>`).join('')}</ul></div>
+        <div class="detail-block"><div class="detail-label">Tools</div><div>${a.tools.map(t => `<span class="tool-tag">${t}</span>`).join('')}</div></div>
+        <div class="detail-block"><div class="detail-label">Prompt Template</div><div class="prompt-box">${a.prompt}</div></div>
+    `;
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('agentPanel').classList.add('show');
+}
+
+function openLens(id) {
+    const l = lenses.find(x => x.id === id);
+    if (!l) return;
+    const content = document.getElementById('lensContent');
+    
+    if (l.isCustom) {
+        content.innerHTML = `
+            <h3>${l.icon} ${l.name}</h3>
+            <p class="panel-subtitle">${l.description}</p>
+            <div class="builder">
+                <h4>🔧 Lens Builder</h4>
+                <div class="builder-field"><label class="builder-label">Lens Name</label><input type="text" class="builder-input" id="bName" placeholder="e.g., Renewable Energy..."></div>
+                <div class="builder-field"><label class="builder-label">Standards (press Enter)</label><input type="text" class="builder-input" id="bStandards" placeholder="e.g., ISO 50001..."><div class="builder-tags" id="tStandards"></div></div>
+                <div class="builder-field"><label class="builder-label">Diagnostics (press Enter)</label><input type="text" class="builder-input" id="bDiagnostics" placeholder="e.g., Energy audit..."><div class="builder-tags" id="tDiagnostics"></div></div>
+                <div class="builder-field"><label class="builder-label">Regulators (press Enter)</label><input type="text" class="builder-input" id="bRegulators" placeholder="e.g., NERC..."><div class="builder-tags" id="tRegulators"></div></div>
+                <button class="builder-btn" onclick="buildLens()">✨ Build My Lens</button>
+            </div>
+            <div id="preview"></div>
+        `;
+        setTimeout(setupBuilder, 50);
+    } else {
+        content.innerHTML = `
+            <h3 style="color:${l.color};">${l.icon} ${l.name}</h3>
+            <div class="panel-subtitle">Sector-specific standards and diagnostics</div>
+            <div class="detail-block"><div class="detail-label" style="color:${l.color};">Standards</div><div>${l.standards.map(s => `<span class="tool-tag" style="border-color:${l.color};color:${l.color};">${s}</span>`).join('')}</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:${l.color};">Certifications</div><ul class="detail-list">${l.certifications.map(c => `<li>${c}</li>`).join('')}</ul></div>
+            <div class="detail-block"><div class="detail-label" style="color:${l.color};">Key Diagnostics</div><ul class="detail-list">${l.diagnostics.map(d => `<li>${d}</li>`).join('')}</ul></div>
+            <div class="detail-block"><div class="detail-label" style="color:${l.color};">Regulators</div><div>${l.regulators.map(r => `<span class="tool-tag">${r}</span>`).join('')}</div></div>
+            <div class="detail-block"><div class="detail-label" style="color:${l.color};">Benchmarks</div><ul class="detail-list">${l.benchmarks.map(b => `<li>${b}</li>`).join('')}</ul></div>
+        `;
+    }
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('lensPanel').classList.add('show');
+}
+
+function setupBuilder() {
+    ['Standards','Diagnostics','Regulators'].forEach(f => {
+        const input = document.getElementById('b'+f);
+        const tags = document.getElementById('t'+f);
+        if (!input) return;
+        input.onkeypress = e => {
+            if (e.key === 'Enter' && input.value.trim()) {
+                const v = input.value.trim();
+                customData[f.toLowerCase()].push(v);
+                const tag = document.createElement('span');
+                tag.className = 'builder-tag';
+                tag.innerHTML = v + ' <span class="x" onclick="removeTag(this,\''+f.toLowerCase()+'\',\''+v+'\')">×</span>';
+                tags.appendChild(tag);
+                input.value = '';
+            }
+        };
+    });
+}
+
+function removeTag(el, field, val) {
+    customData[field] = customData[field].filter(v => v !== val);
+    el.parentElement.remove();
+}
+
+function buildLens() {
+    const name = document.getElementById('bName').value || 'My Custom Lens';
+    const preview = document.getElementById('preview');
+    if (!customData.standards.length && !customData.diagnostics.length) {
+        preview.innerHTML = '<p style="color:var(--logo-teal);margin-top:20px;">Add at least one standard or diagnostic!</p>';
+        return;
+    }
+    preview.innerHTML = `
+        <div style="background:var(--bg-card);border:2px solid var(--logo-teal);border-radius:12px;padding:24px;margin-top:24px;">
+            <h4 style="color:var(--logo-teal);margin-bottom:16px;">✅ ${name}</h4>
+            ${customData.standards.length ? `<div style="margin-bottom:14px;"><div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Standards</div><div>${customData.standards.map(s => `<span class="tool-tag" style="border-color:var(--logo-teal);color:var(--logo-teal);">${s}</span>`).join('')}</div></div>` : ''}
+            ${customData.diagnostics.length ? `<div style="margin-bottom:14px;"><div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Diagnostics</div><ul class="detail-list">${customData.diagnostics.map(d => `<li>${d}</li>`).join('')}</ul></div>` : ''}
+            ${customData.regulators.length ? `<div><div style="font-size:11px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Regulators</div><div>${customData.regulators.map(r => `<span class="tool-tag">${r}</span>`).join('')}</div></div>` : ''}
+            <p style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-muted);font-size:13px;">🎉 Your lens is ready!</p>
+        </div>
+    `;
+}
+
+function closePanel() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('agentPanel').classList.remove('show');
+    document.getElementById('lensPanel').classList.remove('show');
+    customData = {standards:[], diagnostics:[], regulators:[]};
+}
+
+function scrollTo(id) {
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+    renderAgents();
+    renderLenses();
+    document.getElementById('overlay').onclick = closePanel;
+    document.onkeydown = e => { if (e.key === 'Escape') closePanel(); };
+});
+</script>
+</body>
+</html>
